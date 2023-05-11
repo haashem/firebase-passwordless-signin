@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:passwordless_signin/injection.dart';
 import 'package:passwordless_signin/routes/routes.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureInjection();
+
   runApp(
     const MyApp(),
   );
