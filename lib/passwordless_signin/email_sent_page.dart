@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:passwordless_signin/passwordless_signin/widgets/primary_button.dart';
-
 import 'package:passwordless_signin/routes/routes.dart';
 
 class EmailSentPage extends StatelessWidget {
