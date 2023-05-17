@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:passwordless_signin/passwordless_signin/bloc/passwordless_signin_bloc.dart';
 import 'package:passwordless_signin/passwordless_signin/widgets/primary_button.dart';
 import 'package:passwordless_signin/routes/routes.dart';
 
@@ -49,7 +51,9 @@ class EmailSentPage extends StatelessWidget {
             const Spacer(),
             PrimaryButton(
               title: 'Open email app',
-              onPressed: () {},
+              onPressed: () => context
+                  .read<PasswordlessSigninBloc>()
+                  .add(const PasswordlessSigninEvent.openMailApp()),
             ),
             const SizedBox(
               height: 32,
