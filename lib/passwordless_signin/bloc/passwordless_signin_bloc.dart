@@ -1,7 +1,10 @@
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:passwordless_signin/auth/passwordless_authenticator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 part 'passwordless_signin_bloc.freezed.dart';
 part 'passwordless_signin_event.dart';
@@ -76,7 +79,17 @@ class PasswordlessSigninBloc
   void _openMailApp(
     _OpenMailApp event,
     Emitter<PasswordlessSigninState> emit,
-  ) {}
+  ) {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      launchUrl(Uri.parse('message://'));
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      const AndroidIntent intent = AndroidIntent(
+        action: 'android.intent.action.MAIN',
+        category: 'android.intent.category.APP_EMAIL',
+      );
+      intent.launch();
+    }
+  }
 
   Either<FailureMessage, String> _validateEmailAddress(String email) {
     const emailRegex =
