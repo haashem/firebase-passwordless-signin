@@ -1,5 +1,9 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:passwordless_signin/auth/passwordless_authenticator.dart';
 import 'package:passwordless_signin/home_page.dart';
+import 'package:passwordless_signin/injection.dart';
+import 'package:passwordless_signin/passwordless_signin/bloc/passwordless_signin_bloc.dart';
 import 'package:passwordless_signin/passwordless_signin/email_page.dart';
 import 'package:passwordless_signin/passwordless_signin/email_sent_page.dart';
 
@@ -28,15 +32,26 @@ class AppRouter {
         path: Routes.home.path,
         builder: (context, state) => const HomePage(),
       ),
-      GoRoute(
-        name: Routes.emailForm.name,
-        path: Routes.emailForm.path,
-        builder: (context, state) => const EmailPage(),
+      ShellRoute(
+        builder: (context, state, child) {
+          return BlocProvider(
+            create: (context) =>
+                PasswordlessSigninBloc(getIt<PasswordlessAuthenticator>()),
+            child: child,
+          );
+        },
         routes: [
           GoRoute(
-            name: Routes.emailSent.name,
-            path: Routes.emailSent.path,
-            builder: (context, state) => const EmailSentPage(),
+            name: Routes.emailForm.name,
+            path: Routes.emailForm.path,
+            builder: (context, state) => const EmailPage(),
+            routes: [
+              GoRoute(
+                name: Routes.emailSent.name,
+                path: Routes.emailSent.path,
+                builder: (context, state) => const EmailSentPage(),
+              ),
+            ],
           ),
         ],
       ),
