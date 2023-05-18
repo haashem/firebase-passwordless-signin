@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:passwordless_signin/auth/passwordless_authenticator.dart';
+import 'package:passwordless_signin/auth_provider_scope.dart';
 import 'package:passwordless_signin/home_page.dart';
 import 'package:passwordless_signin/injection.dart';
 import 'package:passwordless_signin/passwordless_signin/bloc/passwordless_signin_bloc.dart';
@@ -57,13 +58,24 @@ class AppRouter {
       ),
     ],
     redirect: (context, state) {
+      final authNotifierProvider = AuthProviderScope.of(context);
+      // if user is already signed in
+      final isSignedIn = authNotifierProvider.isSignedIn;
+
       // check if user is in signin flow
       final isInSigninFlow = state.matchedLocation == Routes.emailForm.path ||
           state.matchedLocation ==
               '${Routes.emailForm.path}/${Routes.emailSent.path}';
 
       // if user is in signin flow, do nothing otherwise redirect to signin flow entry point
-      return isInSigninFlow ? null : Routes.emailForm.path;
+      if (isSignedIn == false) {
+        return isInSigninFlow ? null : Routes.emailForm.path;
+      } else if (isInSigninFlow) {
+        return Routes.home.path;
+      } else {
+         // no need to redirect at all
+        return null;
+      }
     },
   );
 }

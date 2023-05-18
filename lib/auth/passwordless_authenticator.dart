@@ -6,6 +6,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:passwordless_signin/auth/email_secure_store.dart';
 import 'package:passwordless_signin/auth/models/failure.dart';
 import 'package:passwordless_signin/auth/models/sign_in_link_settings.dart';
+import 'package:passwordless_signin/auth/models/user.dart';
 
 class PasswordlessAuthenticator {
   final firebase_auth.FirebaseAuth _firebaseAuth;
@@ -99,5 +100,17 @@ class PasswordlessAuthenticator {
 
   void _handleLinkError(Object error) {
     onSigninFailure?.call(EmailLinkFailure.linkError(error.toString()));
+  }
+
+  Stream<Option<User>> authStateChanges() {
+    return _firebaseAuth
+        .authStateChanges()
+        .map((user) => optionOf(user?.toDomain()));
+  }
+}
+
+extension FirebaseUserDomain on firebase_auth.User {
+  User toDomain() {
+    return User(uid);
   }
 }

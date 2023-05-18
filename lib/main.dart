@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:passwordless_signin/auth/passwordless_authenticator.dart';
+import 'package:passwordless_signin/auth_provider_scope.dart';
 import 'package:passwordless_signin/injection.dart';
 import 'package:passwordless_signin/routes/routes.dart';
 
@@ -7,7 +9,12 @@ void main() async {
   await configureInjection();
 
   runApp(
-    const MyApp(),
+    AuthProviderScope(
+      authNotifier: AuthNotifier(
+        getIt<PasswordlessAuthenticator>(),
+      ),
+      child: const MyApp(),
+    ),
   );
 }
 
