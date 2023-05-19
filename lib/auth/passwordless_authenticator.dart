@@ -7,6 +7,7 @@ import 'package:passwordless_signin/auth/email_secure_store.dart';
 import 'package:passwordless_signin/auth/models/failure.dart';
 import 'package:passwordless_signin/auth/models/sign_in_link_settings.dart';
 import 'package:passwordless_signin/auth/models/user.dart';
+import 'package:rxdart/subjects.dart';
 
 class PasswordlessAuthenticator {
   final firebase_auth.FirebaseAuth _firebaseAuth;
@@ -14,6 +15,8 @@ class PasswordlessAuthenticator {
   final EmailSecureStore _emailSecureStore;
   final SignInLinkSettings _signinLinkSettings;
   void Function(EmailLinkFailure value)? onSigninFailure;
+  final BehaviorSubject<bool> _loadingController = BehaviorSubject();
+  Stream<bool> get isLoading => _loadingController.stream;
 
   PasswordlessAuthenticator(
     this._firebaseAuth,
@@ -74,13 +77,19 @@ class PasswordlessAuthenticator {
     }
   }
 
+  void _setLoading(bool loading) {
+    _loadingController.add(loading);
+  }
+
   /// Sets up listeners to process all links from [FirebaseDynamicLinks.instance.getInitialLink()] and [FirebaseDynamicLinks.instance.onLink]
   Future<void> checkEmailLink() async {
     // Listen to incoming links when the app is open
     _firebaseDynamicLinks.onLink.listen(
       (event) async {
+        _setLoading(true);
         final result = await signInWithEmailLink(event.link);
         result.fold((failure) => onSigninFailure?.call(failure), (_) => null);
+        _setLoading(false);
       },
       onError: _handleLinkError,
     );
@@ -88,13 +97,16 @@ class PasswordlessAuthenticator {
     try {
       // Check dynamic link once on app startup.
       // This is required to process any dynamic links that are opened when the app was closed
+      _setLoading(true);
       final linkData = await _firebaseDynamicLinks.getInitialLink();
       final link = linkData?.link.toString();
       if (link != null) {
-        signInWithEmailLink(linkData!.link);
+        await signInWithEmailLink(linkData!.link);
       }
     } catch (e) {
       _handleLinkError(e);
+    } finally {
+      _setLoading(false);
     }
   }
 
@@ -109,6 +121,10 @@ class PasswordlessAuthenticator {
   }
 
   Future<void> signout() => _firebaseAuth.signOut();
+
+  void dispose() {
+    _loadingController.close();
+  }
 }
 
 extension FirebaseUserDomain on firebase_auth.User {
