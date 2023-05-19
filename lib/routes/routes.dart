@@ -31,7 +31,9 @@ class AppRouter {
     routes: [
       GoRoute(
         path: Routes.home.path,
-        builder: (context, state) => const HomePage(),
+        builder: (context, state) => HomePage(
+          onSignoutRequest: () => getIt<PasswordlessAuthenticator>().signout(),
+        ),
       ),
       ShellRoute(
         builder: (context, state, child) {
@@ -73,7 +75,7 @@ class AppRouter {
       } else if (isInSigninFlow) {
         return Routes.home.path;
       } else {
-         // no need to redirect at all
+        // no need to redirect at all
         return null;
       }
     },

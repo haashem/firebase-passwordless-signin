@@ -107,6 +107,8 @@ class PasswordlessAuthenticator {
         .authStateChanges()
         .map((user) => optionOf(user?.toDomain()));
   }
+
+  Future<void> signout() => _firebaseAuth.signOut();
 }
 
 extension FirebaseUserDomain on firebase_auth.User {
