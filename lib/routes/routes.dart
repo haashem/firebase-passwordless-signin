@@ -7,9 +7,11 @@ import 'package:passwordless_signin/injection.dart';
 import 'package:passwordless_signin/passwordless_signin/bloc/passwordless_signin_bloc.dart';
 import 'package:passwordless_signin/passwordless_signin/email_page.dart';
 import 'package:passwordless_signin/passwordless_signin/email_sent_page.dart';
+import 'package:passwordless_signin/passwordless_signin/signin_verification_page.dart';
 
 enum Routes {
   home,
+  signinVerification,
   emailForm,
   emailSent;
 
@@ -17,6 +19,8 @@ enum Routes {
     switch (this) {
       case Routes.home:
         return '/';
+      case Routes.signinVerification:
+        return '/signinVerification';
       case Routes.emailForm:
         return '/emailForm';
       case Routes.emailSent:
@@ -58,6 +62,11 @@ class AppRouter {
           ),
         ],
       ),
+      GoRoute(
+        name: Routes.signinVerification.name,
+        path: Routes.signinVerification.path,
+        builder: (context, state) => const SigninVerificationPage(),
+      ),
     ],
     redirect: (context, state) {
       final authNotifierProvider = AuthProviderScope.of(context);
@@ -69,10 +78,15 @@ class AppRouter {
           state.matchedLocation ==
               '${Routes.emailForm.path}/${Routes.emailSent.path}';
 
-      // if user is in signin flow, do nothing otherwise redirect to signin flow entry point
-      if (isSignedIn == false) {
+      final isSigninInProgress = authNotifierProvider.isSigninInProgress;
+      
+      if (isSigninInProgress) {
+        return Routes.signinVerification.path;
+      } else if (isSignedIn == false) {
+        // if user is in signin flow, do nothing otherwise redirect to signin flow entry point
         return isInSigninFlow ? null : Routes.emailForm.path;
-      } else if (isInSigninFlow) {
+      } else if (isSignedIn && (isInSigninFlow ||
+          state.matchedLocation == Routes.signinVerification.path)) {
         return Routes.home.path;
       } else {
         // no need to redirect at all
