@@ -78,7 +78,8 @@ class AppRouter {
           state.matchedLocation ==
               '${Routes.emailForm.path}/${Routes.emailSent.path}';
 
-      final isSigninInProgress = authNotifierProvider.isSigninInProgress;
+      final isSigninInProgress = authNotifierProvider.isSigninInProgress ||
+          authNotifierProvider.alertIsPresented;
       
       if (isSigninInProgress) {
         return Routes.signinVerification.path;

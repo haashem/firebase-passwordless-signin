@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:passwordless_signin/auth/models/failure.dart';
 
 import 'package:passwordless_signin/auth/passwordless_authenticator.dart';
 
@@ -25,6 +26,17 @@ class AuthNotifier extends ChangeNotifier {
   final PasswordlessAuthenticator _auth;
   bool isSignedIn = false;
   bool isSigninInProgress = false;
+  ValueChanged<EmailLinkFailure>? onError;
+
+  bool _alertIsPresented = false;
+  set alertIsPresented(bool value) {
+    _alertIsPresented = value;
+    notifyListeners();
+  }
+
+  bool get alertIsPresented {
+    return _alertIsPresented;
+  }
 
   StreamSubscription? _isLoadingSubscription;
   AuthNotifier(
@@ -41,6 +53,10 @@ class AuthNotifier extends ChangeNotifier {
         notifyListeners();
       }
     });
+
+    _auth.onSigninFailure = (value){
+      onError?.call(value);
+    };
   }
 
   @override

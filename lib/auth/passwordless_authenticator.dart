@@ -101,7 +101,8 @@ class PasswordlessAuthenticator {
       final linkData = await _firebaseDynamicLinks.getInitialLink();
       final link = linkData?.link.toString();
       if (link != null) {
-        await signInWithEmailLink(linkData!.link);
+        final result = await signInWithEmailLink(linkData!.link);
+        result.fold((failure) => onSigninFailure?.call(failure), (_) => null);
       }
     } catch (e) {
       _handleLinkError(e);
