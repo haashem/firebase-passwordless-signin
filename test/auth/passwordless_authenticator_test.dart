@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,67 +9,11 @@ import 'package:passwordless_signin/auth/models/sign_in_link_settings.dart';
 import 'package:passwordless_signin/auth/models/user.dart' as app_user_model;
 import 'package:passwordless_signin/auth/passwordless_authenticator.dart';
 
+import 'mocks/firebase_auth_spy.dart';
+
 class MockFirebaseDynamicLinks extends Mock implements FirebaseDynamicLinks {}
 
 class MockEmailSecureStorage extends Mock implements EmailSecureStore {}
-
-class FakeUserCredentials extends Fake implements UserCredential {
-  @override
-  User? get user => FakeUser();
-}
-
-class FakeUser extends Fake implements User {
-  @override
-  String get uid => '1';
-}
-
-class FirebaseAuthSpy extends Mock implements FirebaseAuth {
-  List<(String, ActionCodeSettings)> sendSignInLinkMessages = [];
-  List<(String, String)> signInMessages = [];
-  Completer<void> sendSigninLinkCompleter = Completer<void>();
-  Completer<UserCredential> signInWithEmailLinkCompleter =
-      Completer<UserCredential>();
-  StreamController<User?> userController = StreamController();
-
-  @override
-  Future<void> sendSignInLinkToEmail({
-    required String email,
-    required ActionCodeSettings actionCodeSettings,
-  }) async {
-    sendSignInLinkMessages.add((email, actionCodeSettings));
-    return sendSigninLinkCompleter.future;
-  }
-
-  void completeSendLinkWithSuccess([int index = 0]) {
-    sendSigninLinkCompleter.complete();
-  }
-
-  void completeSendLinkWithFailure(Exception error, [int index = 0]) {
-    sendSigninLinkCompleter.completeError(error);
-  }
-
-  @override
-  Future<UserCredential> signInWithEmailLink({
-    required String email,
-    required String emailLink,
-  }) async {
-    signInMessages.add((email, emailLink));
-    return signInWithEmailLinkCompleter.future;
-  }
-
-  void completeSigninWithLinkWithSuccess([int index = 0]) {
-    final UserCredential userCredential = FakeUserCredentials();
-    userController.add(userCredential.user);
-    signInWithEmailLinkCompleter.complete(userCredential);
-  }
-
-  void completeSigninWithLinkWithFailure(Exception error, [int index = 0]) {
-    signInWithEmailLinkCompleter.completeError(error);
-  }
-
-  @override
-  Stream<User?> authStateChanges() => userController.stream;
-}
 
 void main() {
   late FirebaseAuthSpy firebaseAuth;
@@ -327,6 +269,7 @@ void main() {
           },
         );
         expect(sut.authStateChanges(), emits(Some(app_user_model.User('1'))));
+
 
         firebaseAuth.completeSigninWithLinkWithSuccess();
       },
