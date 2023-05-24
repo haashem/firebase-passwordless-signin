@@ -46,7 +46,7 @@ class PasswordlessAuthenticator {
     } on firebase_auth.FirebaseAuthException catch (e) {
       return left(Failure.unexpectedError(e.message));
     } catch (e) {
-      return left(Failure.unexpectedError());
+      return left(const Failure.unexpectedError());
     }
   }
 

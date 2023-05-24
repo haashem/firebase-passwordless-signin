@@ -1,10 +1,12 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'failure.freezed.dart';
 
-class Failure {
-  final String? message;
-  Failure.unexpectedError([this.message]);
+@freezed
+class Failure with _$Failure {
+  const Failure._();
+  const factory Failure.unexpectedError([String? message]) = _UnexpectedError;
 }
 
 @freezed

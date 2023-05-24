@@ -15,6 +15,210 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
+mixin _$Failure {
+  String? get message => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String? message) unexpectedError,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String? message)? unexpectedError,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String? message)? unexpectedError,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_UnexpectedError value) unexpectedError,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_UnexpectedError value)? unexpectedError,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_UnexpectedError value)? unexpectedError,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $FailureCopyWith<Failure> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $FailureCopyWith<$Res> {
+  factory $FailureCopyWith(Failure value, $Res Function(Failure) then) =
+      _$FailureCopyWithImpl<$Res, Failure>;
+  @useResult
+  $Res call({String? message});
+}
+
+/// @nodoc
+class _$FailureCopyWithImpl<$Res, $Val extends Failure>
+    implements $FailureCopyWith<$Res> {
+  _$FailureCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? message = freezed,
+  }) {
+    return _then(_value.copyWith(
+      message: freezed == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_UnexpectedErrorCopyWith<$Res>
+    implements $FailureCopyWith<$Res> {
+  factory _$$_UnexpectedErrorCopyWith(
+          _$_UnexpectedError value, $Res Function(_$_UnexpectedError) then) =
+      __$$_UnexpectedErrorCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String? message});
+}
+
+/// @nodoc
+class __$$_UnexpectedErrorCopyWithImpl<$Res>
+    extends _$FailureCopyWithImpl<$Res, _$_UnexpectedError>
+    implements _$$_UnexpectedErrorCopyWith<$Res> {
+  __$$_UnexpectedErrorCopyWithImpl(
+      _$_UnexpectedError _value, $Res Function(_$_UnexpectedError) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? message = freezed,
+  }) {
+    return _then(_$_UnexpectedError(
+      freezed == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_UnexpectedError extends _UnexpectedError {
+  const _$_UnexpectedError([this.message]) : super._();
+
+  @override
+  final String? message;
+
+  @override
+  String toString() {
+    return 'Failure.unexpectedError(message: $message)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_UnexpectedError &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_UnexpectedErrorCopyWith<_$_UnexpectedError> get copyWith =>
+      __$$_UnexpectedErrorCopyWithImpl<_$_UnexpectedError>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String? message) unexpectedError,
+  }) {
+    return unexpectedError(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String? message)? unexpectedError,
+  }) {
+    return unexpectedError?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String? message)? unexpectedError,
+    required TResult orElse(),
+  }) {
+    if (unexpectedError != null) {
+      return unexpectedError(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_UnexpectedError value) unexpectedError,
+  }) {
+    return unexpectedError(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_UnexpectedError value)? unexpectedError,
+  }) {
+    return unexpectedError?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_UnexpectedError value)? unexpectedError,
+    required TResult orElse(),
+  }) {
+    if (unexpectedError != null) {
+      return unexpectedError(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _UnexpectedError extends Failure {
+  const factory _UnexpectedError([final String? message]) = _$_UnexpectedError;
+  const _UnexpectedError._() : super._();
+
+  @override
+  String? get message;
+  @override
+  @JsonKey(ignore: true)
+  _$$_UnexpectedErrorCopyWith<_$_UnexpectedError> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 mixin _$EmailLinkFailure {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
