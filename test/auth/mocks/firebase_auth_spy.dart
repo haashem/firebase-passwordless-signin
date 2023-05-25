@@ -16,6 +16,7 @@ class FakeUser extends Fake implements User {
 class FirebaseAuthSpy extends Mock implements FirebaseAuth {
   List<(String, ActionCodeSettings)> sendSignInLinkMessages = [];
   List<(String, String)> signInMessages = [];
+  bool signoutCalled = false;
   Completer<void> sendSigninLinkCompleter = Completer<void>();
   Completer<UserCredential> signInWithEmailLinkCompleter =
       Completer<UserCredential>();
@@ -55,6 +56,12 @@ class FirebaseAuthSpy extends Mock implements FirebaseAuth {
 
   void completeSigninWithLinkWithFailure(Exception error, [int index = 0]) {
     signInWithEmailLinkCompleter.completeError(error);
+  }
+
+  @override
+  Future<void> signOut() async {
+    signoutCalled = true;
+    userController.add(null);
   }
 
   @override
