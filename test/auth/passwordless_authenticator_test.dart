@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -42,14 +44,13 @@ void main() {
       iOSBundleId: signinLinkSettings.iOSBundleId,
       dynamicLinkDomain: signinLinkSettings.dynamicLinkDomain,
     );
+
     sut = PasswordlessAuthenticator(
       firebaseAuth,
       firebaseDynamicLinks,
       emailSecureStore,
       signinLinkSettings,
     );
-
-    registerFallbackValue(actionCodeSettings);
   });
   group('sendSignInLinkToEmail', () {
     test(
@@ -121,7 +122,7 @@ void main() {
     test(
       'delivers error on EmailSecureStore error',
       () async {
-        // When
+        // Given
         when(
           () => emailSecureStore.setEmail(email),
         ).thenThrow(() => Exception());
@@ -137,7 +138,7 @@ void main() {
     test(
       'delivers success on successful sendSignInLinkToEmail',
       () async {
-        // When
+        // Given
         when(
           () => emailSecureStore.setEmail(email),
         ).thenAnswer((_) async {});
@@ -270,9 +271,134 @@ void main() {
         );
         expect(sut.authStateChanges(), emits(Some(app_user_model.User('1'))));
 
-
         firebaseAuth.completeSigninWithLinkWithSuccess();
       },
     );
+  });
+
+  group('checkEmailLink', () {
+    final signinLink = Uri.https('sigin-link.com');
+    group('getInitialLink', () {
+      test('calls onSigninFailure when getInitialLink fails', () async {
+        final exception = Exception('an exception message');
+        sut.onSigninFailure = (value) {
+          expect(value, EmailLinkFailure.linkError(exception.toString()));
+        };
+        when(() => firebaseDynamicLinks.getInitialLink()).thenThrow(exception);
+        when(() => firebaseDynamicLinks.onLink).thenAnswer(
+          (_) => StreamController<PendingDynamicLinkData>().stream,
+        );
+        sut.checkEmailLink();
+      });
+
+      test('calls onSigninFailure when signInWithEmailLink fails', () async {
+        // Given
+        when(() => firebaseDynamicLinks.getInitialLink())
+            .thenAnswer((_) async => PendingDynamicLinkData(link: signinLink));
+        when(() => firebaseDynamicLinks.onLink).thenAnswer(
+          (_) => StreamController<PendingDynamicLinkData>().stream,
+        );
+        when(
+          () => emailSecureStore.getEmail(),
+        ).thenAnswer((_) async => null);
+
+        sut.onSigninFailure = (value) {
+          // Then
+          expect(value, const EmailLinkFailure.emailNotSet());
+        };
+
+        // When
+        final _ = await sut.checkEmailLink();
+      });
+
+      test('emits loading while signInWithEmailLink is in progress', () async {
+        final signinLinkStreamController =
+            StreamController<PendingDynamicLinkData>();
+
+        when(() => firebaseDynamicLinks.getInitialLink()).thenAnswer(
+          (invocation) async => PendingDynamicLinkData(link: signinLink),
+        );
+        when(() => firebaseDynamicLinks.onLink).thenAnswer(
+          (_) => signinLinkStreamController.stream,
+        );
+        when(
+          () => emailSecureStore.getEmail(),
+        ).thenAnswer((_) async => null);
+        sut.checkEmailLink();
+
+        expect(sut.isLoading, emitsInOrder([true, false]));
+      });
+    });
+
+    group('onLink', () {
+      test('calls onSigninFailure when onLink stream emits failure', () async {
+        // Given
+        final exception = Exception('an exception message');
+        final signinLinkStreamController =
+            StreamController<PendingDynamicLinkData>();
+
+        sut.onSigninFailure = (value) {
+          // Then
+          expect(value, EmailLinkFailure.linkError(exception.toString()));
+        };
+        when(() => firebaseDynamicLinks.getInitialLink())
+            .thenAnswer((invocation) async => null);
+        when(() => firebaseDynamicLinks.onLink).thenAnswer(
+          (_) => signinLinkStreamController.stream,
+        );
+
+        // When
+        sut.checkEmailLink();
+        signinLinkStreamController.addError(exception);
+      });
+
+      test('calls onSigninFailure when signInWithEmailLink fails', () async {
+        final signinLinkStreamController =
+            StreamController<PendingDynamicLinkData>();
+        sut.onSigninFailure = (value) {
+          expect(value, const EmailLinkFailure.emailNotSet());
+        };
+        when(() => firebaseDynamicLinks.getInitialLink())
+            .thenAnswer((invocation) async => null);
+        when(() => firebaseDynamicLinks.onLink).thenAnswer(
+          (_) => signinLinkStreamController.stream,
+        );
+        when(
+          () => emailSecureStore.getEmail(),
+        ).thenAnswer((_) async => null);
+
+        sut.checkEmailLink();
+        signinLinkStreamController
+            .add(PendingDynamicLinkData(link: signinLink));
+      });
+
+      test('emits loading while signInWithEmailLink is in progress', () async {
+        // Given
+        final signinLinkStreamController =
+            StreamController<PendingDynamicLinkData>();
+        when(() => firebaseDynamicLinks.getInitialLink())
+            .thenAnswer((invocation) async => null);
+        when(() => firebaseDynamicLinks.onLink).thenAnswer(
+          (_) => signinLinkStreamController.stream,
+        );
+        when(
+          () => emailSecureStore.getEmail(),
+        ).thenAnswer((_) async => null);
+
+        // When
+        sut.checkEmailLink();
+        signinLinkStreamController
+            .add(PendingDynamicLinkData(link: signinLink));
+        
+        // Then
+        expect(sut.isLoading, emitsInOrder([true, false]));
+      });
+    });
+  });
+
+  test('Signout user', () async {
+    await sut.signout();
+    expect(sut.authStateChanges(), emits(none()));
+    expect(firebaseAuth.signoutCalled, isTrue);
   });
 }
