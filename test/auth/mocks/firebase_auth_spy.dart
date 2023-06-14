@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rxdart/subjects.dart';
 
 class FakeUserCredentials extends Fake implements UserCredential {
   @override
@@ -20,7 +21,7 @@ class FirebaseAuthSpy extends Mock implements FirebaseAuth {
   Completer<void> sendSigninLinkCompleter = Completer<void>();
   Completer<UserCredential> signInWithEmailLinkCompleter =
       Completer<UserCredential>();
-  StreamController<User?> userController = StreamController();
+  BehaviorSubject<User?> userController = BehaviorSubject();
 
   @override
   Future<void> sendSignInLinkToEmail({
