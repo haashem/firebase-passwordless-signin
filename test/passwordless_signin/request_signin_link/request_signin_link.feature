@@ -7,7 +7,13 @@ Feature: Request signin link
         And I'm not signed in
         Then I see email page
 
-    Scenario: On system failure to send sign in link, an error alert should be shown
+    Scenario: Email should be validated
+        Given I'm on the email page
+        When I enter {'invalidEmail'} in the email field
+        And I tap the {'Sign in'} button
+        Then I should see invalid email error message
+
+    Scenario: On system failure to send sign in link, error alert should be shown
         Given I'm on the email page
         And I enter {validEmail} in the email field
         When I tap the {'Sign in'} button

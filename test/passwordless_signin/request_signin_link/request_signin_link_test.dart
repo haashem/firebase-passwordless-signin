@@ -13,6 +13,7 @@ import './step/im_on_the_email_page.dart';
 import './step/i_enter_in_the_email_field.dart';
 import './step/i_tap_the_button.dart';
 import './step/i_see_loading_indicator.dart';
+import './step/i_should_see_invalid_email_error_message.dart';
 import './step/system_fails_to_sent_email_link.dart';
 import './step/i_should_see_an_error_alert.dart';
 import './step/loading_indicator_hides.dart';
@@ -23,6 +24,12 @@ void main() {
       await iLaunchTheApp(tester);
       await imNotSignedIn(tester);
       await iSeeEmailPage(tester);
+    });
+    testWidgets('''Email should be validated''', (tester) async {
+      await imOnTheEmailPage(tester);
+      await iEnterInTheEmailField(tester, 'invalidEmail');
+      await iTapTheButton(tester, 'Sign in');
+      await iShouldSeeInvalidEmailErrorMessage(tester);
     });
     testWidgets('''On system failure to send sign in link, an error alert should be shown''', (tester) async {
       await imOnTheEmailPage(tester);
