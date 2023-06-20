@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:passwordless_signin/auth/email_secure_store.dart';
 import 'package:passwordless_signin/auth/models/sign_in_link_settings.dart';
