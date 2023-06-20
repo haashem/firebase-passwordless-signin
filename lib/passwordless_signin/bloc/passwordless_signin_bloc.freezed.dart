@@ -114,15 +114,23 @@ class __$$_EmailChangedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_EmailChanged implements _EmailChanged {
+class _$_EmailChanged with DiagnosticableTreeMixin implements _EmailChanged {
   const _$_EmailChanged(this.email);
 
   @override
   final String email;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'PasswordlessSigninEvent.emailChanged(email: $email)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'PasswordlessSigninEvent.emailChanged'))
+      ..add(DiagnosticsProperty('email', email));
   }
 
   @override
@@ -238,12 +246,19 @@ class __$$_SendMagicLinkCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_SendMagicLink implements _SendMagicLink {
+class _$_SendMagicLink with DiagnosticableTreeMixin implements _SendMagicLink {
   const _$_SendMagicLink();
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'PasswordlessSigninEvent.sendMagicLink()';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+        DiagnosticsProperty('type', 'PasswordlessSigninEvent.sendMagicLink'));
   }
 
   @override
@@ -346,12 +361,19 @@ class __$$_OpenMailAppCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_OpenMailApp implements _OpenMailApp {
+class _$_OpenMailApp with DiagnosticableTreeMixin implements _OpenMailApp {
   const _$_OpenMailApp();
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'PasswordlessSigninEvent.openMailApp()';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+        DiagnosticsProperty('type', 'PasswordlessSigninEvent.openMailApp'));
   }
 
   @override
@@ -547,7 +569,9 @@ class __$$_PasswordlessSignInFormStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_PasswordlessSignInFormState implements _PasswordlessSignInFormState {
+class _$_PasswordlessSignInFormState
+    with DiagnosticableTreeMixin
+    implements _PasswordlessSignInFormState {
   const _$_PasswordlessSignInFormState(
       {required this.emailAddress,
       required this.isSubmitting,
@@ -561,8 +585,19 @@ class _$_PasswordlessSignInFormState implements _PasswordlessSignInFormState {
   final Option<Either<String, Unit>> failureOrSuccessOption;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'PasswordlessSigninState(emailAddress: $emailAddress, isSubmitting: $isSubmitting, failureOrSuccessOption: $failureOrSuccessOption)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'PasswordlessSigninState'))
+      ..add(DiagnosticsProperty('emailAddress', emailAddress))
+      ..add(DiagnosticsProperty('isSubmitting', isSubmitting))
+      ..add(DiagnosticsProperty(
+          'failureOrSuccessOption', failureOrSuccessOption));
   }
 
   @override
