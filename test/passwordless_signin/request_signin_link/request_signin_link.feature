@@ -32,3 +32,9 @@ Feature: Request signin link
         And system fails to sent email link
         Then I should be able to retry
         
+    Scenario: On send sign-in link success, user should see email sent page
+        Given I'm on the email page
+        And I enter {validEmail} in the email field
+        When I tap the {'Sign in'} button
+        And The system successfully sends the email link
+        Then I should navigate to the email sent page

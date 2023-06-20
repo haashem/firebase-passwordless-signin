@@ -19,6 +19,8 @@ import './step/system_fails_to_sent_email_link.dart';
 import './step/i_should_see_an_error_alert.dart';
 import './step/loading_indicator_hides.dart';
 import './step/i_should_be_able_to_retry.dart';
+import './step/the_system_successfully_sends_the_email_link.dart';
+import './step/i_should_navigate_to_the_email_sent_page.dart';
 
 void main() {
   group('''Request signin link''', () {
@@ -64,6 +66,17 @@ void main() {
         await iTapTheButton(tester, 'Sign in');
         await systemFailsToSentEmailLink(tester);
         await iShouldBeAbleToRetry(tester);
+      } finally {
+        await bddTearDown(tester);
+      }
+    });
+    testWidgets('''On send sign-in link success, user should see email sent page''', (tester) async {
+      try {
+        await imOnTheEmailPage(tester);
+        await iEnterInTheEmailField(tester, validEmail);
+        await iTapTheButton(tester, 'Sign in');
+        await theSystemSuccessfullySendsTheEmailLink(tester);
+        await iShouldNavigateToTheEmailSentPage(tester);
       } finally {
         await bddTearDown(tester);
       }
