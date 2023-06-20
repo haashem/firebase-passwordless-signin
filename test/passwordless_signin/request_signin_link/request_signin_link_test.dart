@@ -21,6 +21,9 @@ import './step/loading_indicator_hides.dart';
 import './step/i_should_be_able_to_retry.dart';
 import './step/the_system_successfully_sends_the_email_link.dart';
 import './step/i_should_navigate_to_the_email_sent_page.dart';
+import './step/im_on_the_email_sent_page.dart';
+import './step/i_tap_the_back_button.dart';
+import './step/send_signin_link_should_be_requested.dart';
 
 void main() {
   group('''Request signin link''', () {
@@ -46,7 +49,7 @@ void main() {
         await bddTearDown(tester);
       }
     });
-    testWidgets('''On system failure to send sign in link, an error alert should be shown''', (tester) async {
+    testWidgets('''On system failure to send sign in link, error alert should be shown''', (tester) async {
       try {
         await imOnTheEmailPage(tester);
         await iEnterInTheEmailField(tester, validEmail);
@@ -77,6 +80,18 @@ void main() {
         await iTapTheButton(tester, 'Sign in');
         await theSystemSuccessfullySendsTheEmailLink(tester);
         await iShouldNavigateToTheEmailSentPage(tester);
+      } finally {
+        await bddTearDown(tester);
+      }
+    });
+    testWidgets('''In case of incorrect sent email, user should able retry with correct email''', (tester) async {
+      try {
+        await imOnTheEmailSentPage(tester);
+        await iTapTheBackButton(tester);
+        await iSeeEmailPage(tester);
+        await iEnterInTheEmailField(tester, validEmail);
+        await iTapTheButton(tester, 'Sign in');
+        await sendSigninLinkShouldBeRequested(tester);
       } finally {
         await bddTearDown(tester);
       }

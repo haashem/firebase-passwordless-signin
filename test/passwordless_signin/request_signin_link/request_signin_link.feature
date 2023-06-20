@@ -38,3 +38,11 @@ Feature: Request signin link
         When I tap the {'Sign in'} button
         And The system successfully sends the email link
         Then I should navigate to the email sent page
+
+    Scenario: In case of incorrect sent email, user should able retry with correct email
+        Given I'm on the email sent page
+        When I tap the back button
+        Then I see email page
+        And I enter {validEmail} in the email field
+        And I tap the {'Sign in'} button
+        And Send signin link should be requested
