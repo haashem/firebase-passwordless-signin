@@ -2,6 +2,9 @@ import '../shared/sample_data.dart';
 
 Feature: Request signin link
     
+    After:
+        Then clean up
+
     Scenario: Not signed-in user is directed to the email page
         Given I launch the app
         And I'm not signed in
@@ -21,3 +24,11 @@ Feature: Request signin link
         And system fails to sent email link
         Then I should see an error alert
         And Loading indicator hides
+
+    Scenario: On system failure to send sign in link, user shoule be able to retry
+        Given I'm on the email page
+        And I enter {validEmail} in the email field
+        When I tap the {'Sign in'} button
+        And system fails to sent email link
+        Then I should be able to retry
+        
