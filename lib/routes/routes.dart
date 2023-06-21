@@ -8,6 +8,7 @@ import 'package:passwordless_signin/passwordless_signin/bloc/passwordless_signin
 import 'package:passwordless_signin/passwordless_signin/email_page.dart';
 import 'package:passwordless_signin/passwordless_signin/email_sent_page.dart';
 import 'package:passwordless_signin/passwordless_signin/signin_verification_page.dart';
+import 'package:passwordless_signin/utilities/mailapp_launcher.dart';
 
 enum Routes {
   home,
@@ -42,8 +43,10 @@ class AppRouter {
       ShellRoute(
         builder: (context, state, child) {
           return BlocProvider(
-            create: (context) =>
-                PasswordlessSigninBloc(getIt<PasswordlessAuthenticator>()),
+            create: (context) => PasswordlessSigninBloc(
+              getIt<PasswordlessAuthenticator>(),
+              getIt<MailAppLauncher>(),
+            ),
             child: child,
           );
         },
@@ -80,14 +83,15 @@ class AppRouter {
 
       final isSigninInProgress = authNotifierProvider.isSigninInProgress ||
           authNotifierProvider.alertIsPresented;
-      
+
       if (isSigninInProgress) {
         return Routes.signinVerification.path;
       } else if (isSignedIn == false) {
         // if user is in signin flow, do nothing otherwise redirect to signin flow entry point
         return isInSigninFlow ? null : Routes.emailForm.path;
-      } else if (isSignedIn && (isInSigninFlow ||
-          state.matchedLocation == Routes.signinVerification.path)) {
+      } else if (isSignedIn &&
+          (isInSigninFlow ||
+              state.matchedLocation == Routes.signinVerification.path)) {
         return Routes.home.path;
       } else {
         // no need to redirect at all

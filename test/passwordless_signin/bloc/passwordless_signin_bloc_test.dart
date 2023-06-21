@@ -5,21 +5,25 @@ import 'package:mocktail/mocktail.dart';
 import 'package:passwordless_signin/auth/models/failure.dart';
 import 'package:passwordless_signin/auth/passwordless_authenticator.dart';
 import 'package:passwordless_signin/passwordless_signin/bloc/passwordless_signin_bloc.dart';
+import 'package:passwordless_signin/utilities/mailapp_launcher.dart';
 
 class MockPasswordlessAuthenticator extends Mock
     implements PasswordlessAuthenticator {}
 
+class MockMailAppLauncher extends Mock implements MailAppLauncher {}
+
 void main() {
   late PasswordlessAuthenticator authenticator;
+  late MailAppLauncher mailAppLauncher;
   const validEmail = 'myid@email.com';
 
   setUp(() {
     authenticator = MockPasswordlessAuthenticator();
-    
+    mailAppLauncher = MockMailAppLauncher();
   });
 
   PasswordlessSigninBloc makeSut() =>
-      PasswordlessSigninBloc(authenticator);
+      PasswordlessSigninBloc(authenticator, mailAppLauncher);
   test('Initial state should be Initial', () {
     expect(
       makeSut().state,
@@ -128,5 +132,20 @@ void main() {
         ),
       )
     ],
+  );
+
+  blocTest<PasswordlessSigninBloc, PasswordlessSigninState>(
+    'WHEN open mail app requested '
+    'THEN mail app launcher should be called',
+    build: () => makeSut(),
+    setUp: () {
+      when(
+        () => mailAppLauncher.launch(),
+      ).thenAnswer((_) async => {});
+    },
+    act: (bloc) {
+      bloc.add(const PasswordlessSigninEvent.openMailApp());
+    },
+    verify: (_) => verify(mailAppLauncher.launch).called(1),
   );
 }
