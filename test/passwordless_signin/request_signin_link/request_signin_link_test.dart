@@ -24,6 +24,7 @@ import './step/i_should_navigate_to_the_email_sent_page.dart';
 import './step/im_on_the_email_sent_page.dart';
 import './step/i_tap_the_back_button.dart';
 import './step/send_signin_link_should_be_requested.dart';
+import './step/the_email_app_is_launched.dart';
 
 void main() {
   group('''Request signin link''', () {
@@ -92,6 +93,15 @@ void main() {
         await iEnterInTheEmailField(tester, validEmail);
         await iTapTheButton(tester, 'Sign in');
         await sendSigninLinkShouldBeRequested(tester);
+      } finally {
+        await bddTearDown(tester);
+      }
+    });
+    testWidgets('''Open email app button, opens email app''', (tester) async {
+      try {
+        await imOnTheEmailSentPage(tester);
+        await iTapTheButton(tester, 'Open email app');
+        await theEmailAppIsLaunched(tester);
       } finally {
         await bddTearDown(tester);
       }

@@ -46,3 +46,8 @@ Feature: Request signin link
         And I enter {validEmail} in the email field
         And I tap the {'Sign in'} button
         And Send signin link should be requested
+
+    Scenario: Open email app button, opens email app
+        Given I'm on the email sent page
+        When I tap the {'Open email app'} button
+        Then The email app is launched
